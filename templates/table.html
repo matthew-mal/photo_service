@@ -1,0 +1,23 @@
+{% if message %}
+<div class="mt-2 text-green-600">{{ message }}</div>
+{% endif %}
+<table class="w-full border">
+    <thead>
+        <tr class="bg-gray-200">
+            <th class="p-2">Имя файла</th>
+            <th class="p-2">Случайное число</th>
+            <th class="p-2">Время загрузки</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for photo in photos %}
+        <tr>
+            <td class="p-2 border">{{ photo.file_name }}</td>
+            <td class="p-2 border">{{ photo.random_number }}</td>
+            <td class="p-2 border">{{ photo.uploaded_at|date:"Y-m-d H:i:s" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3" class="p-2 text-center">Нет данных</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
