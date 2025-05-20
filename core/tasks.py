@@ -22,7 +22,11 @@ def process_photo(photo_id, file_name):
 
         # Отправляем уведомление в Telegram, если это 20-й файл
         if Photo.objects.count() % 20 == 0:
-            asyncio.run(send_telegram_notification(f"Обработано 20 файлов! Последний: {file_name}, число: {random_number}"))
+            asyncio.run(
+                send_telegram_notification(
+                    f"Обработано 20 файлов! Последний: {file_name}, число: {random_number}"
+                )
+            )
     except Photo.DoesNotExist:
         logger.error(f"Photo {photo_id} not found")
     except Exception as e:

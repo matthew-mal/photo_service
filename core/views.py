@@ -24,7 +24,10 @@ class UploadPhotoView(APIView):
         photo = request.FILES.get("photo")
         if not photo:
             logger.error("No photo provided in request")
-            return Response({"error": "Пожалуйста, выберите файл для загрузки"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Пожалуйста, выберите файл для загрузки"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         file_name = photo.name
         logger.info(f"Processing file: {file_name}")
@@ -32,11 +35,17 @@ class UploadPhotoView(APIView):
         process_photo.delay(photo_instance.id, file_name)
         logger.info(f"Task queued for photo_id: {photo_instance.id}")
         if request.htmx:
-            return render(request, "table.html", {
-                "photos": Photo.objects.all().order_by("-uploaded_at"),
-                "message": "Файл в обработке"
-            })
-        return Response({"message": "Файл в обработке"}, status=status.HTTP_202_ACCEPTED)
+            return render(
+                request,
+                "table.html",
+                {
+                    "photos": Photo.objects.all().order_by("-uploaded_at"),
+                    "message": "Файл в обработке",
+                },
+            )
+        return Response(
+            {"message": "Файл в обработке"}, status=status.HTTP_202_ACCEPTED
+        )
 
 
 class BulkUploadView(APIView):
@@ -44,7 +53,10 @@ class BulkUploadView(APIView):
         photo = request.FILES.get("photo")
         if not photo:
             logger.error("No photo provided in request for bulk upload")
-            return Response({"error": "Пожалуйста, выберите файл для загрузки"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Пожалуйста, выберите файл для загрузки"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         base_file_name = photo.name
         logger.info(f"Starting bulk upload with base file: {base_file_name}")
@@ -53,11 +65,17 @@ class BulkUploadView(APIView):
             photo_instance = Photo.objects.create(file_name=file_name, random_number=0)
             process_photo.delay(photo_instance.id, file_name)
         if request.htmx:
-            return render(request, "table.html", {
-                "photos": Photo.objects.all().order_by("-uploaded_at"),
-                "message": "Файл в обработке"
-            })
-        return Response({"message": "Файл в обработке"}, status=status.HTTP_202_ACCEPTED)
+            return render(
+                request,
+                "table.html",
+                {
+                    "photos": Photo.objects.all().order_by("-uploaded_at"),
+                    "message": "Файл в обработке",
+                },
+            )
+        return Response(
+            {"message": "Файл в обработке"}, status=status.HTTP_202_ACCEPTED
+        )
 
 
 class StatusView(APIView):
