@@ -153,8 +153,15 @@ class TestListPhotosView:
         assert response.status_code == 200
         assert "table.html" in [t.name for t in response.templates]
         assert "photos" in response.context
-        assert response.context["photos"].count() == 1
+        assert response.context["photos"].paginator.count == 1
         assert response.context["photos"][0].file_name == "test.jpg"
+
+    def test_list_photos_view_empty(self, client):
+        response = client.get(reverse("list_photos"))
+        assert response.status_code == 200
+        assert "table.html" in [t.name for t in response.templates]
+        assert "photos" in response.context
+        assert response.context["photos"].paginator.count == 0
 
 
 # Tests for process_photo task
