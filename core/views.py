@@ -1,3 +1,4 @@
+from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 from django.views.generic import TemplateView
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -88,4 +89,15 @@ class StatusView(APIView):
 class ListPhotosView(APIView):
     def get(self, request):
         photos = Photo.objects.all().order_by("-uploaded_at")
-        return render(request, "table.html", {"photos": photos})
+        paginator = Paginator(photos, 50)
+        page = request.GET.get("page", 1)
+        try:
+            page_obj = paginator.page(page)
+        except PageNotAnInteger:
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            page_obj = paginator.page(paginator.num_pages)
+        return render(request, "table.html", {
+            "photos": page_obj,
+            "page_obj": page_obj,
+        })
